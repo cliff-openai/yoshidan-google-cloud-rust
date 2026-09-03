@@ -113,6 +113,7 @@ async fn test_single_use_read_timestamp() {
         let mut statement = Statement::new("SELECT UserId FROM User WHERE UserId = @id");
         statement.add_param("id", &id);
         check(tx.query(statement).await.unwrap(), timestamp.clone().into(), has_row).await;
+        drop(tx);
 
         let mut tx = client
             .single_with_timestamp_bound(TimestampBound::read_timestamp(timestamp.clone()))
